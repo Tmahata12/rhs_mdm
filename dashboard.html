@@ -11,26 +11,73 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     
     <style>
+        :root {
+            --bg-gradient-start: #667eea;
+            --bg-gradient-end: #764ba2;
+            --header-gradient-start: #667eea;
+            --header-gradient-end: #764ba2;
+            --container-bg: rgba(255, 255, 255, 0.95);
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --card-border: rgba(255, 255, 255, 0.3);
+            --chart-bg: rgba(249, 250, 251, 0.8);
+            --footer-gradient-start: #1e3a8a;
+            --footer-gradient-end: #1e40af;
+        }
+        
+        body.dark-mode {
+            --bg-gradient-start: #0f172a;
+            --bg-gradient-end: #1e293b;
+            --header-gradient-start: #312e81;
+            --header-gradient-end: #1e3a8a;
+            --container-bg: rgba(30, 41, 59, 0.95);
+            --text-primary: #f9fafb;
+            --text-secondary: #cbd5e1;
+            --card-bg: rgba(51, 65, 85, 0.7);
+            --card-border: rgba(71, 85, 105, 0.3);
+            --chart-bg: rgba(51, 65, 85, 0.8);
+            --footer-gradient-start: #0f172a;
+            --footer-gradient-end: #1e293b;
+        }
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
         
+        html, body {
+            height: 100%;
+        }
+        
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            background-attachment: fixed;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+        
+        .page-wrapper {
+            flex: 1 0 auto;
             padding: 1rem;
         }
         
         .dashboard-header {
-            background: linear-gradient(135deg, #5a67d8 0%, #4c51bf 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-radius: 16px;
-            padding: 1.25rem 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
             color: white;
+            backdrop-filter: blur(10px);
+        }
+        
+        body.dark-mode .dashboard-header {
+            background: linear-gradient(135deg, #312e81 0%, #1e3a8a 100%);
+            box-shadow: 0 20px 60px rgba(30, 58, 138, 0.4);
         }
         
         .header-content {
@@ -50,12 +97,14 @@
         .header-logo {
             width: 50px;
             height: 50px;
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 4px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
         
         .header-logo img {
@@ -68,11 +117,12 @@
             font-size: 1.35rem;
             font-weight: 700;
             margin-bottom: 0.15rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
         
         .header-left p {
             font-size: 0.8rem;
-            opacity: 0.9;
+            opacity: 0.95;
         }
         
         .header-right {
@@ -86,11 +136,12 @@
             align-items: center;
             gap: 0.5rem;
             padding: 0.5rem 0.85rem;
-            background: rgba(16, 185, 129, 0.2);
+            background: rgba(16, 185, 129, 0.25);
             border-radius: 20px;
             font-size: 0.85rem;
             font-weight: 600;
-            border: 1px solid rgba(16, 185, 129, 0.3);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            backdrop-filter: blur(10px);
         }
         
         .status-dot {
@@ -99,6 +150,7 @@
             background: #10b981;
             border-radius: 50%;
             animation: pulse 2s infinite;
+            box-shadow: 0 0 10px #10b981;
         }
         
         @keyframes pulse {
@@ -108,19 +160,21 @@
         
         .header-clock {
             padding: 0.5rem 0.85rem;
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 8px;
             font-family: 'Courier New', monospace;
             font-weight: 600;
             font-size: 0.85rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
         
         .icon-btn {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.15);
-            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             color: white;
             display: flex;
             align-items: center;
@@ -129,11 +183,17 @@
             position: relative;
             transition: all 0.3s;
             font-size: 1.1rem;
+            backdrop-filter: blur(10px);
         }
         
         .icon-btn:hover {
-            background: rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.3);
             transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .icon-btn.active {
+            background: rgba(255, 255, 255, 0.35);
         }
         
         .notification-badge {
@@ -150,6 +210,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
         }
         
         .user-dropdown {
@@ -161,16 +222,18 @@
             align-items: center;
             gap: 0.6rem;
             padding: 0.4rem 0.85rem 0.4rem 0.4rem;
-            background: rgba(255, 255, 255, 0.15);
-            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 25px;
             color: white;
             cursor: pointer;
             transition: all 0.3s;
+            backdrop-filter: blur(10px);
         }
         
         .user-info:hover {
-            background: rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
         
         .user-avatar {
@@ -183,6 +246,7 @@
             justify-content: center;
             font-weight: 700;
             font-size: 0.9rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
         
         .user-name {
@@ -203,9 +267,11 @@
             position: absolute;
             top: calc(100% + 0.5rem);
             right: 0;
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
             border-radius: 12px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             min-width: 200px;
             opacity: 0;
             visibility: hidden;
@@ -213,6 +279,10 @@
             transition: all 0.3s;
             z-index: 1000;
             overflow: hidden;
+        }
+        
+        body.dark-mode .user-menu {
+            background: rgba(51, 65, 85, 0.95);
         }
         
         .user-dropdown.active .user-menu {
@@ -231,7 +301,12 @@
             transition: all 0.2s;
             font-size: 0.9rem;
             font-weight: 500;
-            border-bottom: 1px solid #f3f4f6;
+            border-bottom: 1px solid rgba(243, 244, 246, 0.5);
+        }
+        
+        body.dark-mode .user-menu-item {
+            color: #f9fafb;
+            border-bottom-color: rgba(71, 85, 105, 0.5);
         }
         
         .user-menu-item:last-child {
@@ -239,8 +314,12 @@
         }
         
         .user-menu-item:hover {
-            background: #f9fafb;
+            background: rgba(249, 250, 251, 0.8);
             padding-left: 1.5rem;
+        }
+        
+        body.dark-mode .user-menu-item:hover {
+            background: rgba(71, 85, 105, 0.8);
         }
         
         .btn-logout {
@@ -250,10 +329,13 @@
         .dashboard-container {
             max-width: 1400px;
             margin: 0 auto;
-            background: white;
+            background: var(--container-bg);
+            backdrop-filter: blur(20px);
             border-radius: 16px;
             padding: 1.5rem;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
         }
         
         .quick-actions {
@@ -264,45 +346,52 @@
         }
         
         .action-card {
-            background: #f9fafb;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
             border-radius: 12px;
             padding: 1.25rem;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s;
-            border: 2px solid transparent;
+            border: 1px solid var(--card-border);
             text-decoration: none;
             color: inherit;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
         
         .action-card:hover {
-            background: white;
+            background: rgba(255, 255, 255, 0.9);
             border-color: #667eea;
             transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
+            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        body.dark-mode .action-card:hover {
+            background: rgba(71, 85, 105, 0.9);
         }
         
         .action-icon {
             font-size: 2.5rem;
             margin-bottom: 0.5rem;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
         }
         
         .action-title {
             font-weight: 700;
             font-size: 0.9rem;
-            color: #111827;
+            color: var(--text-primary);
             margin-bottom: 0.25rem;
         }
         
         .action-subtitle {
             font-size: 0.75rem;
-            color: #6b7280;
+            color: var(--text-secondary);
         }
         
         .section-title {
             font-size: 1.1rem;
             font-weight: 700;
-            color: #111827;
+            color: var(--text-primary);
             margin-bottom: 1rem;
             display: flex;
             align-items: center;
@@ -317,33 +406,37 @@
         }
         
         .stat-card {
-            background: linear-gradient(135deg, #f9fafb 0%, white 100%);
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
             border-radius: 12px;
             padding: 1.25rem;
-            border: 2px solid #e5e7eb;
+            border: 1px solid var(--card-border);
             transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
         
         .stat-card:hover {
             border-color: #667eea;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.25);
+            transform: translateY(-2px);
         }
         
         .stat-icon {
             font-size: 2rem;
             margin-bottom: 0.5rem;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
         }
         
         .stat-value {
             font-size: 1.75rem;
             font-weight: 800;
-            color: #111827;
+            color: var(--text-primary);
             margin-bottom: 0.25rem;
         }
         
         .stat-label {
             font-size: 0.85rem;
-            color: #6b7280;
+            color: var(--text-secondary);
             font-weight: 500;
         }
         
@@ -355,10 +448,13 @@
         }
         
         .chart-wrapper {
-            background: #f9fafb;
+            background: var(--chart-bg);
+            backdrop-filter: blur(10px);
             border-radius: 12px;
             padding: 1.5rem;
             overflow: hidden;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
         
         .chart-header {
@@ -371,7 +467,7 @@
         .chart-title {
             font-weight: 700;
             font-size: 1rem;
-            color: #111827;
+            color: var(--text-primary);
         }
         
         .chart-controls {
@@ -382,18 +478,24 @@
         .chart-btn {
             padding: 0.4rem 0.85rem;
             border-radius: 20px;
-            border: none;
-            background: white;
-            color: #6b7280;
+            border: 1px solid var(--card-border);
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            color: var(--text-secondary);
             font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
         }
         
+        body.dark-mode .chart-btn {
+            background: rgba(51, 65, 85, 0.6);
+        }
+        
         .chart-btn.active {
             background: #667eea;
             color: white;
+            border-color: #667eea;
         }
         
         .chart-canvas-container {
@@ -415,16 +517,18 @@
             text-align: center;
             color: white;
             margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(118, 75, 162, 0.3);
         }
         
         .qr-title {
             font-size: 1.35rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
         
         .qr-subtitle {
-            opacity: 0.9;
+            opacity: 0.95;
             margin-bottom: 1.5rem;
         }
         
@@ -438,18 +542,21 @@
         .qr-placeholder {
             width: 150px;
             height: 150px;
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
             border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 4rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
         }
         
         .qr-btn {
             padding: 0.85rem 1.75rem;
-            background: rgba(255, 255, 255, 0.25);
-            border: 2px solid white;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.5);
             border-radius: 12px;
             color: white;
             font-weight: 700;
@@ -460,19 +567,23 @@
         .qr-btn:hover {
             background: white;
             color: #764ba2;
+            box-shadow: 0 4px 16px rgba(255, 255, 255, 0.3);
         }
         
         .activity-section {
-            background: #f9fafb;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
             border-radius: 12px;
             padding: 1.5rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
         
         .activity-placeholder {
             text-align: center;
             padding: 2rem;
-            color: #6b7280;
+            color: var(--text-secondary);
         }
         
         .activity-icon {
@@ -482,14 +593,15 @@
         }
         
         .dashboard-footer {
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            flex-shrink: 0;
+            background: linear-gradient(135deg, var(--footer-gradient-start) 0%, var(--footer-gradient-end) 100%);
             color: white;
             padding: 1.5rem;
-            border-radius: 16px;
-            margin-top: 1.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.2);
+            margin: 0;
         }
         
         .footer-left {
@@ -529,12 +641,13 @@
         }
         
         @media (max-width: 768px) {
-            body {
+            .page-wrapper {
                 padding: 0.5rem;
             }
             
             .dashboard-header {
                 padding: 1rem;
+                border-radius: 12px;
             }
             
             .header-content {
@@ -567,6 +680,7 @@
                 flex-direction: column;
                 gap: 1rem;
                 text-align: center;
+                padding: 1rem;
             }
             
             .footer-right {
@@ -576,172 +690,174 @@
     </style>
 </head>
 <body>
-    <div class="dashboard-header">
-        <div class="header-content">
-            <div class="header-left">
-                <div class="header-logo">
-                    <img src="data:image/png;base64,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" alt="RHS Logo">
+    <div class="page-wrapper">
+        <div class="dashboard-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="header-logo">
+                        <img src="data:image/png;base64,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" alt="RHS Logo">
+                    </div>
+                    <div>
+                        <h1>RHS MDM Dashboard</h1>
+                        <p>Ramnagar High School • Mid-Day Meal Management System V2.0</p>
+                    </div>
                 </div>
-                <div>
-                    <h1>RHS MDM Dashboard</h1>
-                    <p>Ramnagar High School • Mid-Day Meal Management System V2.0</p>
+                
+                <div class="header-right">
+                    <div class="status-badge">
+                        <span class="status-dot"></span>
+                        <span>Active</span>
+                    </div>
+                    
+                    <div class="header-clock" id="headerClock">00:00:00</div>
+                    
+                    <button class="icon-btn" onclick="showNotifications()">
+                        🔔
+                        <span class="notification-badge">2</span>
+                    </button>
+                    
+                    <button class="icon-btn" id="darkModeBtn" onclick="toggleDarkMode()">🌙</button>
+                    
+                    <div class="user-dropdown" id="userDropdown">
+                        <div class="user-info" onclick="toggleUserDropdown(event)">
+                            <div class="user-avatar">A</div>
+                            <span class="user-name" id="userName">Admin</span>
+                            <span class="dropdown-arrow">▼</span>
+                        </div>
+                        <div class="user-menu">
+                            <div class="user-menu-item" onclick="openProfile()">
+                                👤 Profile
+                            </div>
+                            <div class="user-menu-item" onclick="openSettings()">
+                                ⚙️ Settings
+                            </div>
+                            <div class="user-menu-item" onclick="changePassword()">
+                                🔑 Change Password
+                            </div>
+                            <div class="user-menu-item btn-logout" onclick="logout()">
+                                🚪 Logout
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="dashboard-container">
+            <div class="quick-actions">
+                <a href="app.html" class="action-card">
+                    <div class="action-icon">📱</div>
+                    <div class="action-title">MDM Application</div>
+                    <div class="action-subtitle">Main management system</div>
+                </a>
+                <a href="app.html" class="action-card">
+                    <div class="action-icon">📝</div>
+                    <div class="action-title">Form C Entry</div>
+                    <div class="action-subtitle">Daily attendance entry</div>
+                </a>
+                <a href="app.html" class="action-card">
+                    <div class="action-icon">🏦</div>
+                    <div class="action-title">Bank Ledger</div>
+                    <div class="action-subtitle">Manage transactions</div>
+                </a>
+                <a href="app.html" class="action-card">
+                    <div class="action-icon">🌾</div>
+                    <div class="action-title">Rice Ledger</div>
+                    <div class="action-subtitle">Stock management</div>
+                </a>
+                <a href="app.html" class="action-card">
+                    <div class="action-icon">📊</div>
+                    <div class="action-title">Reports</div>
+                    <div class="action-subtitle">View & export reports</div>
+                </a>
+                <a href="user-management.html" class="action-card">
+                    <div class="action-icon">👥</div>
+                    <div class="action-title">Users</div>
+                    <div class="action-subtitle">Manage users</div>
+                </a>
+                <a href="activity-logs.html" class="action-card">
+                    <div class="action-icon">📋</div>
+                    <div class="action-title">Activity Logs</div>
+                    <div class="action-subtitle">View system logs</div>
+                </a>
+            </div>
+            
+            <h2 class="section-title">📊 Statistics Overview</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📝</div>
+                    <div class="stat-value" id="formCEntries">0</div>
+                    <div class="stat-label">Form C Entries</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-value" id="bankBalance">₹0</div>
+                    <div class="stat-label">Bank Balance</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🌾</div>
+                    <div class="stat-value" id="riceStock">0.0 kg</div>
+                    <div class="stat-label">Rice Stock</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💸</div>
+                    <div class="stat-value" id="totalExpenses">₹0</div>
+                    <div class="stat-label">Total Expenses</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-value" id="activeUsers">0</div>
+                    <div class="stat-label">Active Users</div>
                 </div>
             </div>
             
-            <div class="header-right">
-                <div class="status-badge">
-                    <span class="status-dot"></span>
-                    <span>Active</span>
-                </div>
-                
-                <div class="header-clock" id="headerClock">00:00:00</div>
-                
-                <button class="icon-btn" onclick="showNotifications()">
-                    🔔
-                    <span class="notification-badge">2</span>
-                </button>
-                
-                <button class="icon-btn" onclick="toggleDarkMode()">🌙</button>
-                
-                <div class="user-dropdown" id="userDropdown">
-                    <div class="user-info" onclick="toggleUserDropdown(event)">
-                        <div class="user-avatar">A</div>
-                        <span class="user-name" id="userName">Admin</span>
-                        <span class="dropdown-arrow">▼</span>
+            <h2 class="section-title">📈 Analytics</h2>
+            <div class="charts-container">
+                <div class="chart-wrapper">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Monthly Expenses</h3>
+                        <div class="chart-controls">
+                            <button class="chart-btn">Day</button>
+                            <button class="chart-btn active">Week</button>
+                            <button class="chart-btn">Month</button>
+                        </div>
                     </div>
-                    <div class="user-menu">
-                        <div class="user-menu-item" onclick="openProfile()">
-                            👤 Profile
+                    <div class="chart-canvas-container">
+                        <canvas id="expenseChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-wrapper">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Attendance Trends</h3>
+                        <div class="chart-controls">
+                            <button class="chart-btn active">Week</button>
+                            <button class="chart-btn">Month</button>
                         </div>
-                        <div class="user-menu-item" onclick="openSettings()">
-                            ⚙️ Settings
-                        </div>
-                        <div class="user-menu-item" onclick="changePassword()">
-                            🔑 Change Password
-                        </div>
-                        <div class="user-menu-item btn-logout" onclick="logout()">
-                            🚪 Logout
-                        </div>
+                    </div>
+                    <div class="chart-canvas-container">
+                        <canvas id="attendanceChart"></canvas>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    
-    <div class="dashboard-container">
-        <div class="quick-actions">
-            <a href="app.html" class="action-card">
-                <div class="action-icon">📱</div>
-                <div class="action-title">MDM Application</div>
-                <div class="action-subtitle">Main management system</div>
-            </a>
-            <a href="app.html" class="action-card">
-                <div class="action-icon">📝</div>
-                <div class="action-title">Form C Entry</div>
-                <div class="action-subtitle">Daily attendance entry</div>
-            </a>
-            <a href="app.html" class="action-card">
-                <div class="action-icon">🏦</div>
-                <div class="action-title">Bank Ledger</div>
-                <div class="action-subtitle">Manage transactions</div>
-            </a>
-            <a href="app.html" class="action-card">
-                <div class="action-icon">🌾</div>
-                <div class="action-title">Rice Ledger</div>
-                <div class="action-subtitle">Stock management</div>
-            </a>
-            <a href="app.html" class="action-card">
-                <div class="action-icon">📊</div>
-                <div class="action-title">Reports</div>
-                <div class="action-subtitle">View & export reports</div>
-            </a>
-            <a href="user-management.html" class="action-card">
-                <div class="action-icon">👥</div>
-                <div class="action-title">Users</div>
-                <div class="action-subtitle">Manage users</div>
-            </a>
-            <a href="activity-logs.html" class="action-card">
-                <div class="action-icon">📋</div>
-                <div class="action-title">Activity Logs</div>
-                <div class="action-subtitle">View system logs</div>
-            </a>
-        </div>
-        
-        <h2 class="section-title">📊 Statistics Overview</h2>
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon">📝</div>
-                <div class="stat-value" id="formCEntries">0</div>
-                <div class="stat-label">Form C Entries</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">💰</div>
-                <div class="stat-value" id="bankBalance">₹0</div>
-                <div class="stat-label">Bank Balance</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">🌾</div>
-                <div class="stat-value" id="riceStock">0.0 kg</div>
-                <div class="stat-label">Rice Stock</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">💸</div>
-                <div class="stat-value" id="totalExpenses">₹0</div>
-                <div class="stat-label">Total Expenses</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">👥</div>
-                <div class="stat-value" id="activeUsers">0</div>
-                <div class="stat-label">Active Users</div>
-            </div>
-        </div>
-        
-        <h2 class="section-title">📈 Analytics</h2>
-        <div class="charts-container">
-            <div class="chart-wrapper">
-                <div class="chart-header">
-                    <h3 class="chart-title">Monthly Expenses</h3>
-                    <div class="chart-controls">
-                        <button class="chart-btn">Day</button>
-                        <button class="chart-btn active">Week</button>
-                        <button class="chart-btn">Month</button>
-                    </div>
-                </div>
-                <div class="chart-canvas-container">
-                    <canvas id="expenseChart"></canvas>
+            
+            <div class="qr-section">
+                <h2 class="qr-title">📱 Quick Entry QR Code</h2>
+                <p class="qr-subtitle">Scan for Today's Entry • Use your mobile device to quickly enter attendance data</p>
+                <div class="qr-content">
+                    <div class="qr-placeholder">📱</div>
+                    <button class="qr-btn" onclick="generateQR()">
+                        🔄 Generate New QR
+                    </button>
                 </div>
             </div>
-            <div class="chart-wrapper">
-                <div class="chart-header">
-                    <h3 class="chart-title">Attendance Trends</h3>
-                    <div class="chart-controls">
-                        <button class="chart-btn active">Week</button>
-                        <button class="chart-btn">Month</button>
-                    </div>
+            
+            <h2 class="section-title">🕐 Recent Activity</h2>
+            <div class="activity-section">
+                <div class="activity-placeholder">
+                    <div class="activity-icon">📭</div>
+                    <div><strong>No recent activity</strong></div>
+                    <div style="font-size: 0.9rem; margin-top: 0.25rem;">Activity will appear here once you start using the system</div>
                 </div>
-                <div class="chart-canvas-container">
-                    <canvas id="attendanceChart"></canvas>
-                </div>
-            </div>
-        </div>
-        
-        <div class="qr-section">
-            <h2 class="qr-title">📱 Quick Entry QR Code</h2>
-            <p class="qr-subtitle">Scan for Today's Entry • Use your mobile device to quickly enter attendance data</p>
-            <div class="qr-content">
-                <div class="qr-placeholder">📱</div>
-                <button class="qr-btn" onclick="generateQR()">
-                    🔄 Generate New QR
-                </button>
-            </div>
-        </div>
-        
-        <h2 class="section-title">🕐 Recent Activity</h2>
-        <div class="activity-section">
-            <div class="activity-placeholder">
-                <div class="activity-icon">📭</div>
-                <div><strong>No recent activity</strong></div>
-                <div style="font-size: 0.9rem; margin-top: 0.25rem;">Activity will appear here once you start using the system</div>
             </div>
         </div>
     </div>
@@ -789,6 +905,16 @@
             }
         });
         
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            var isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+            
+            var btn = document.getElementById('darkModeBtn');
+            btn.textContent = isDark ? '☀️' : '🌙';
+            btn.classList.toggle('active', isDark);
+        }
+        
         function openProfile() {
             closeDropdown();
             window.location.href = 'user-management.html';
@@ -820,10 +946,6 @@
         
         function showNotifications() {
             alert('Notifications:\n\n1. New Form-C entry required\n2. Bank ledger needs update');
-        }
-        
-        function toggleDarkMode() {
-            alert('Dark mode feature coming soon!');
         }
         
         function generateQR() {
@@ -938,6 +1060,13 @@
         window.addEventListener('load', function() {
             var username = localStorage.getItem('username') || 'Admin';
             document.getElementById('userName').textContent = username;
+            
+            var darkMode = localStorage.getItem('darkMode');
+            if (darkMode === 'enabled') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('darkModeBtn').textContent = '☀️';
+                document.getElementById('darkModeBtn').classList.add('active');
+            }
             
             loadStatistics();
             setTimeout(initializeCharts, 100);
