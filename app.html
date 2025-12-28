@@ -145,7 +145,7 @@
             position: relative;
             box-shadow: 0 8px 32px rgba(0, 52, 122, 0.35), inset 0 1px 0 rgba(255,255,255,0.1);
             border-bottom: 3px solid rgba(102, 126, 234, 0.5);
-            overflow: hidden;
+            overflow: visible;
         }
         
         .header::before {
@@ -224,56 +224,241 @@
             margin: 6px 0 0 0;
             color: #c9d9f5;
             font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .header-controls {
             display: flex;
-            flex-direction: column;
-            gap: 8px;
-            align-items: flex-end;
+            gap: 10px;
+            align-items: center;
             z-index: 10;
         }
         
         .header-controls-row {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             align-items: center;
         }
 
-        .clock {
-            background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(102, 126, 234, 0.15) 100%);
+        /* Status Badge */
+        .status-badge {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1.5px solid rgba(16, 185, 129, 0.4);
             padding: 8px 14px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 12px;
-            border: 1px solid rgba(255,255,255,0.2);
-            color: #e8f0ff;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1), inset 0 1px 1px rgba(255,255,255,0.15);
-        }
-
-        .btn-control {
-            background: linear-gradient(135deg, rgba(255,255,255,0.18) 0%, rgba(102, 126, 234, 0.18) 100%);
-            border: 1.5px solid rgba(255,255,255,0.3);
-            color: #e8f0ff;
-            padding: 8px 14px;
-            border-radius: 7px;
-            cursor: pointer;
-            font-size: 11px;
+            border-radius: 20px;
             font-weight: 600;
+            font-size: 12px;
+            color: #d1fae5;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+        }
+
+        .status-badge .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        /* Clock Styling */
+        .clock {
+            background: rgba(59, 130, 246, 0.15);
+            border: 1.5px solid rgba(59, 130, 246, 0.4);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 12px;
+            color: #dbeafe;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-width: 110px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .clock span:last-child {
+            display: inline-block;
+            width: 65px;
+            text-align: center;
+        }
+
+        /* Notification Bell */
+        .notification-btn {
+            position: relative;
+            background: rgba(251, 191, 36, 0.15);
+            border: 1.5px solid rgba(251, 191, 36, 0.4);
+            color: #fef3c7;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1), inset 0 1px 1px rgba(255,255,255,0.15);
-            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(251, 191, 36, 0.2);
         }
 
-        .btn-control:hover {
-            background: linear-gradient(135deg, rgba(255,255,255,0.28) 0%, rgba(102, 126, 234, 0.28) 100%);
-            border-color: rgba(255,255,255,0.5);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3), inset 0 1px 1px rgba(255,255,255,0.2);
-            transform: translateY(-2px);
+        .notification-btn:hover {
+            background: rgba(251, 191, 36, 0.25);
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
         }
 
-        .btn-control:active {
-            transform: translateY(0);
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #ef4444;
+            color: white;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            font-size: 10px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #3b4d8f;
+        }
+
+        /* Dark Mode Toggle */
+        .dark-mode-btn {
+            background: rgba(139, 92, 246, 0.15);
+            border: 1.5px solid rgba(139, 92, 246, 0.4);
+            color: #ede9fe;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.2);
+        }
+
+        .dark-mode-btn:hover {
+            background: rgba(139, 92, 246, 0.25);
+            transform: rotate(20deg) scale(1.05);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+
+        /* Admin Dropdown */
+        .admin-dropdown {
+            position: relative;
+            z-index: 1000;
+        }
+
+        .admin-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1.5px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .admin-btn .dropdown-icon {
+            font-size: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .admin-dropdown.active .dropdown-icon {
+            transform: rotate(180deg);
+        }
+
+        .admin-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05);
+            min-width: 220px;
+            display: none;
+            z-index: 10000;
+            overflow: hidden;
+        }
+
+        .admin-dropdown.active .admin-menu {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .admin-menu-item {
+            padding: 12px 18px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 500;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .admin-menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .admin-menu-item:hover {
+            background: #f8fafc;
+            padding-left: 22px;
+        }
+
+        .admin-menu-item.danger {
+            color: #dc2626;
+        }
+
+        .admin-menu-item.danger:hover {
+            background: #fef2f2;
+        }
+
+        body.dark-mode .admin-menu {
+            background: #1e293b;
+            border: 1px solid #334155;
+        }
+
+        body.dark-mode .admin-menu-item {
+            color: #e2e8f0;
+            border-bottom-color: #334155;
+        }
+
+        body.dark-mode .admin-menu-item:hover {
+            background: #334155;
         }
         
         /* Responsive header */
@@ -288,12 +473,26 @@
             }
             
             .header-controls {
-                align-items: center;
-                margin-top: 10px;
+                justify-content: center;
+                margin-top: 15px;
+                flex-wrap: wrap;
             }
             
             .header-content .school-info {
                 font-size: 11px;
+                white-space: normal;
+                text-align: center;
+            }
+
+            .notification-btn, .dark-mode-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 14px;
+            }
+
+            .admin-btn {
+                padding: 6px 12px;
+                font-size: 12px;
             }
         }
 
@@ -326,45 +525,69 @@
         /* ========== TABS ========== */
         .tabs {
             display: flex;
-            gap: 5px;
-            padding: 15px 20px;
-            background: #f5f5f5;
-            border-bottom: 2px solid #ddd;
+            gap: 8px;
+            padding: 20px 20px 15px 20px;
+            background: white;
+            border-bottom: none;
             overflow-x: auto;
             flex-wrap: wrap;
         }
 
         body.dark-mode .tabs {
-            background: #252535;
-            border-bottom: 2px solid #444;
+            background: #1e1e2e;
         }
 
         .tab-btn {
-            padding: 10px 20px;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 5px 5px 0 0;
+            padding: 10px 18px;
+            background: #f1f5f9;
+            border: none;
+            border-radius: 25px;
             cursor: pointer;
-            font-weight: 500;
-            transition: 0.3s;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.3s ease;
             white-space: nowrap;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tab-btn:hover {
+            background: #e2e8f0;
+            color: #475569;
+            transform: translateY(-1px);
         }
 
         .tab-btn.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
             color: white;
-            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Special styling for specific tabs when active */
+        .tab-btn.active[onclick*="tools"] {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
         }
 
         body.dark-mode .tab-btn {
-            background: #333;
-            color: #e0e0e0;
-            border-color: #555;
+            background: #2d2d3d;
+            color: #94a3b8;
+        }
+
+        body.dark-mode .tab-btn:hover {
+            background: #3d3d4d;
+            color: #cbd5e1;
         }
 
         body.dark-mode .tab-btn.active {
-            background: #667eea;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
             color: white;
+        }
+
+        body.dark-mode .tab-btn.active[onclick*="tools"] {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
         }
 
         /* ========== CONTENT ========== */
@@ -711,23 +934,49 @@
         .dashboard-card.blue {
             background: linear-gradient(135deg, #003d7a 0%, #1e3c72 100%);
         }
-
         /* ========== FOOTER ========== */
         .footer {
-            background: linear-gradient(135deg, #0052a3 0%, #003d7a 50%, #1e3c72 100%);
-            color: #e8f0ff;
-            padding: 22px 30px;
-            text-align: center;
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            color: white;
+            padding: 20px 30px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 20px;
             flex-wrap: wrap;
-            box-shadow: 0 -8px 32px rgba(0, 52, 122, 0.35), inset 0 -1px 0 rgba(255,255,255,0.1);
-            border-top: 3px solid rgba(102, 126, 234, 0.5);
-            position: relative;
-            overflow: hidden;
+            box-shadow: 0 -4px 16px rgba(30, 58, 138, 0.2);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
+
+        .footer-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .footer-center {
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .footer-center p {
+            margin: 0;
+            font-weight: 500;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .footer-right {
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        body.dark-mode .footer {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-top-color: rgba(255, 255, 255, 0.05);
+        }
+        
         
         .footer::before {
             content: '';
@@ -1973,29 +2222,50 @@
 
             <!-- Right: Status & Controls -->
             <div class="header-controls">
-                <div class="header-controls-row">
-                    <div style="background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(102, 126, 234, 0.15) 100%); padding: 6px 12px; border-radius: 8px; font-size: 11px; border: 1px solid rgba(255,255,255,0.2); color: #e8f0ff; display: flex; align-items: center; gap: 6px;">
-                        <span style="width: 8px; height: 8px; background: #10b981; border-radius: 50%; animation: pulse 2s infinite;"></span>
-                        <span id="activityText">Active</span>
-                    </div>
-                    <div class="clock" id="clock">12:00:00</div>
+                <!-- Active Status -->
+                <div class="status-badge">
+                    <span class="pulse-dot"></span>
+                    <span id="activityText">Active</span>
                 </div>
-                <div class="header-controls-row" style="gap: 8px;">
-                    <!-- User Info (V2.0) -->
-                    <div style="background: rgba(255,255,255,0.1); padding: 6px 12px; border-radius: 8px; font-size: 11px; border: 1px solid rgba(255,255,255,0.2); color: white; display: flex; align-items: center; gap: 6px;">
-                        <span>👤</span>
-                        <span class="user-name">User</span>
-                        <span style="opacity: 0.7;">•</span>
-                        <span class="user-role" style="font-size: 10px; opacity: 0.9;">Role</span>
-                    </div>
-                    <button class="btn-control" onclick="location.href='dashboard.html'" title="Dashboard">📊</button>
-                    <button class="btn-control" onclick="logout()" title="Logout" style="background: rgba(255,59,59,0.2); border-color: rgba(255,59,59,0.3);">🚪 Logout</button>
+
+                <!-- Clock -->
+                <div class="clock">
+                    <span>🕐</span>
+                    <span id="clock">12:00:00</span>
                 </div>
-                <div class="header-controls-row">
-                    <button class="btn-control" onclick="openPasswordModal()">🔑 Password</button>
-                    <button class="btn-control" onclick="showLockScreen()">🔒 Lock</button>
-                    <button class="btn-control" onclick="toggleDarkMode()">🌙</button>
-                    <button class="btn-control" onclick="logout()">🚪 Logout</button>
+
+                <!-- Notification Bell -->
+                <button class="notification-btn" onclick="showNotifications()" title="Notifications">
+                    🔔
+                    <span class="notification-badge">2</span>
+                </button>
+
+                <!-- Dark Mode Toggle -->
+                <button class="dark-mode-btn" onclick="toggleDarkMode()" title="Toggle Dark Mode">
+                    🌙
+                </button>
+
+                <!-- Admin Dropdown -->
+                <div class="admin-dropdown" id="adminDropdown">
+                    <button class="admin-btn" onclick="toggleAdminMenu()">
+                        <span>Ⓐ</span>
+                        <span class="user-name">Admin</span>
+                        <span class="dropdown-icon">▼</span>
+                    </button>
+                    <div class="admin-menu">
+                        <div class="admin-menu-item" onclick="location.href='dashboard.html'">
+                            📊 Dashboard
+                        </div>
+                        <div class="admin-menu-item" onclick="openPasswordModal()">
+                            🔑 Change Password
+                        </div>
+                        <div class="admin-menu-item" onclick="showLockScreen()">
+                            🔒 Lock Screen
+                        </div>
+                        <div class="admin-menu-item danger" onclick="logout()">
+                            🚪 Logout
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2004,12 +2274,12 @@
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('dashboard')">📊 Dashboard</button>
             <button class="tab-btn" onclick="switchTab('form-c')">📋 Form-C Entry</button>
-            <button class="tab-btn" onclick="switchTab('rice-ledger')">🍚 Rice Ledger</button>
+            <button class="tab-btn" onclick="switchTab('rice-ledger')">🌾 Rice Ledger</button>
             <button class="tab-btn" onclick="switchTab('bank-ledger')">🏦 Bank Ledger</button>
             <button class="tab-btn" onclick="switchTab('expense-ledger')">💰 Expense Ledger</button>
-            <button class="tab-btn" onclick="switchTab('settings')">⚙️ Settings</button>
             <button class="tab-btn" onclick="switchTab('reports')">📄 Reports</button>
-            <button class="tab-btn" onclick="switchTab('tools')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-weight: bold;">🎛️ Tools</button>
+            <button class="tab-btn" onclick="switchTab('settings')">⚙️ Settings</button>
+            <button class="tab-btn" onclick="switchTab('tools')">🎛️ Tools</button>
         </div>
 
         <!-- CONTENT -->
@@ -2017,40 +2287,28 @@
 
             <!-- DASHBOARD TAB -->
             <div id="dashboard" class="tab-content active">
-                <!-- Dashboard Overview -->
-                <div style="border-left: 4px solid #6366f1; padding-left: 12px; margin-bottom: 16px;">
-                    <h2 style="color: #0f172a; font-size: 17px; font-weight: 700; margin: 0;">📊 Dashboard Overview</h2>
+                <!-- Dashboard Overview Header -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div style="border-left: 4px solid #3b82f6; padding-left: 12px;">
+                        <h2 style="color: #0f172a; font-size: 18px; font-weight: 700; margin: 0;">Dashboard Overview</h2>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button onclick="showQuickActionsMenu()" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border: none; color: white; padding: 10px 16px; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 12px; transition: all 0.3s; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(59, 130, 246, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(59, 130, 246, 0.3)'">
+                            ➕ Quick Entry
+                        </button>
+                        <button onclick="showStats()" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); border: none; color: white; padding: 10px 16px; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 12px; transition: all 0.3s; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(139, 92, 246, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(139, 92, 246, 0.3)'">
+                            📊 Statistics
+                        </button>
+                        <button onclick="exportToCSV('formCTable', 'MDM_Data')" style="background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); border: none; color: white; padding: 10px 16px; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 12px; transition: all 0.3s; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(14, 165, 233, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(14, 165, 233, 0.3)'">
+                            📥 Export CSV
+                        </button>
+                        <button onclick="showNotifications()" style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); border: none; color: white; padding: 10px 16px; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 12px; transition: all 0.3s; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(249, 115, 22, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(249, 115, 22, 0.3)'">
+                            🔔 Alerts
+                        </button>
+                    </div>
                 </div>
 
-                <!-- Quick Actions Bar - NEW FEATURE -->
-                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
-                        <div>
-                            <h3 style="color: white; margin: 0 0 5px 0; font-size: 18px; font-weight: 700;">⚡ Quick Actions</h3>
-                            <p style="color: rgba(255,255,255,0.9); margin: 0; font-size: 13px;">Access frequently used features instantly</p>
-                        </div>
-                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                            <button onclick="showQuickActionsMenu()" style="background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.4); color: white; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 13px; transition: all 0.3s; backdrop-filter: blur(10px);" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
-                                🚀 Quick Menu
-                            </button>
-                            <button onclick="showStats()" style="background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.4); color: white; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 13px; transition: all 0.3s; backdrop-filter: blur(10px);" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
-                                📊 Statistics
-                            </button>
-                            <button onclick="exportToCSV('formCTable', 'MDM_Data')" style="background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.4); color: white; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 13px; transition: all 0.3s; backdrop-filter: blur(10px);" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
-                                📥 Export CSV
-                            </button>
-                            <button onclick="showNotifications()" style="background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.4); color: white; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 13px; transition: all 0.3s; backdrop-filter: blur(10px); position: relative;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
-                                🔔 Alerts
-                            </button>
-                        </div>
-                    </div>
-                    <div style="margin-top: 15px; padding: 12px; background: rgba(255,255,255,0.15); border-radius: 8px; backdrop-filter: blur(10px);">
-                        <p style="color: white; margin: 0; font-size: 12px; display: flex; align-items: center; gap: 8px;">
-                            <span>💡</span>
-                            <span><strong>Pro Tip:</strong> Press <kbd style="background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 4px; font-size: 11px;">Ctrl+Space</kbd> for Quick Actions Menu | <kbd style="background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 4px; font-size: 11px;">Ctrl+S</kbd> to Save Settings</span>
-                        </p>
-                    </div>
-                </div>
+                <!-- Quick Actions Bar - REMOVED to match new design -->
 
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 30px;">
                     <!-- Card 1: Total Students Enrolled -->
@@ -3769,13 +4027,15 @@
 
         <!-- FOOTER -->
         <div class="footer">
-            <div class="footer-left" style="display:flex;align-items:center;">
-                <img id="footerLogoImg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%2328a745' width='100' height='100'/%3E%3Ctext x='50' y='60' font-size='50' text-anchor='middle' fill='white'%3E🌾%3C/text%3E%3C/svg%3E" alt="MDM Logo" style="width:40px;height:40px; object-fit: contain;">
+            <div class="footer-left">
+                <img id="footerLogoImg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%233b82f6'/%3E%3Ctext x='50' y='65' font-size='45' text-anchor='middle' fill='white'%3E🍽️%3C/text%3E%3C/svg%3E" alt="MDM Logo" style="width:36px; height:36px; object-fit: contain;">
+                <div>
+                    <p style="margin: 0; font-weight: 700; font-size: 13px;">Complete MDM Portal V19.0</p>
+                    <p style="margin: 0; font-size: 11px; opacity: 0.8;">© 2025 Ramnagar High School • Developed by Tapas Mahata</p>
+                </div>
             </div>
-            <div class="footer-center" style="flex-grow:1;text-align:center;">
-                <p style="margin:0;font-weight:600;font-size:13px;">🌿 Complete MDM Portal v19.0 • © 2025 Ramnagar High School • Developed by Tapas Mahata</p>
-            </div>
-            <div class="footer-right" style="font-size:12px;">
+            <div class="footer-right">
+                Version 2.0.0 • December 2024<br>
                 🌾 Healthy Meal • Bright Future
             </div>
         </div>
@@ -4513,10 +4773,41 @@
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
             localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+            
+            // Update dark mode icon
+            const darkModeBtn = document.querySelector('.dark-mode-btn');
+            if (darkModeBtn) {
+                darkModeBtn.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+            }
         }
 
         if (localStorage.getItem('darkMode') === 'true') {
             document.body.classList.add('dark-mode');
+        }
+
+        // ========== ADMIN DROPDOWN ==========
+        function toggleAdminMenu() {
+            const dropdown = document.getElementById('adminDropdown');
+            dropdown.classList.toggle('active');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('adminDropdown');
+            if (dropdown && !dropdown.contains(event.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+
+        // Update notification count dynamically
+        function updateNotificationCount() {
+            // This can be connected to actual notifications system
+            const notificationBadge = document.querySelector('.notification-badge');
+            if (notificationBadge) {
+                const count = 2; // You can change this dynamically
+                notificationBadge.textContent = count;
+                notificationBadge.style.display = count > 0 ? 'flex' : 'none';
+            }
         }
 
         // ========== DASHBOARD FUNCTIONS ==========
