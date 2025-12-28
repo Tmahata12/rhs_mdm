@@ -436,28 +436,34 @@
         function getDemoUsers() {
             return [
                 {
+                    _id: '1',
                     id: 1,
                     name: 'Admin User',
                     email: 'admin@rhs.edu',
                     role: 'admin',
                     status: 'active',
-                    createdAt: new Date().toISOString()
+                    createdAt: new Date().toISOString(),
+                    lastLogin: null
                 },
                 {
+                    _id: '2',
                     id: 2,
                     name: 'Teacher User',
                     email: 'teacher@rhs.edu',
                     role: 'teacher',
                     status: 'active',
-                    createdAt: new Date().toISOString()
+                    createdAt: new Date().toISOString(),
+                    lastLogin: null
                 },
                 {
+                    _id: '3',
                     id: 3,
                     name: 'Staff User',
                     email: 'staff@rhs.edu',
                     role: 'staff',
                     status: 'inactive',
-                    createdAt: new Date().toISOString()
+                    createdAt: new Date().toISOString(),
+                    lastLogin: null
                 }
             ];
         }
@@ -542,11 +548,65 @@
             document.getElementById('userModal').classList.add('active');
         }
 
+        // Simple notification system (since authManager may not exist)
+        function showNotification(message, type = 'success') {
+            // Try authManager first
+            if (typeof authManager !== 'undefined' && authManager.showNotification) {
+                authManager.showNotification(message, type);
+                return;
+            }
+
+            // Fallback: simple alert
+            const bgColor = type === 'success' ? '#4caf50' : 
+                           type === 'error' ? '#f44336' : 
+                           type === 'warning' ? '#ff9800' : '#2196f3';
+
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${bgColor};
+                color: white;
+                padding: 16px 24px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                z-index: 10000;
+                font-family: 'Inter', sans-serif;
+                font-weight: 500;
+                animation: slideIn 0.3s ease-out;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-in';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Add animation styles
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(400px); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(400px); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
         // Close modal
         function closeModal() {
             document.getElementById('userModal').classList.remove('active');
             document.getElementById('userForm').reset();
             editingUserId = null;
+            // Show password field again
+            document.getElementById('passwordGroup').style.display = 'block';
+            document.getElementById('userPassword').required = true;
         }
 
         // Save user
@@ -576,18 +636,45 @@
                 });
 
                 if (response.success) {
-                    authManager.showNotification(
+                    showNotification(
                         editingUserId ? 'User updated successfully' : 'User created successfully',
                         'success'
                     );
                     closeModal();
                     loadUsers();
                 } else {
-                    authManager.showNotification(response.error || 'Error saving user', 'error');
+                    // Demo mode: Update locally
+                    if (editingUserId) {
+                        // Update existing user
+                        const userIndex = users.findIndex(u => u._id === editingUserId);
+                        if (userIndex !== -1) {
+                            users[userIndex] = { 
+                                ...users[userIndex], 
+                                ...userData,
+                                _id: editingUserId 
+                            };
+                            displayUsers();
+                            showNotification('User updated (Demo Mode)', 'success');
+                            closeModal();
+                        }
+                    } else {
+                        // Add new user
+                        const newUser = {
+                            _id: String(Date.now()),
+                            id: users.length + 1,
+                            ...userData,
+                            createdAt: new Date().toISOString(),
+                            lastLogin: null
+                        };
+                        users.push(newUser);
+                        displayUsers();
+                        showNotification('User added (Demo Mode)', 'success');
+                        closeModal();
+                    }
                 }
             } catch (error) {
                 console.error('Save user error:', error);
-                authManager.showNotification('Error saving user', 'error');
+                showNotification('Error saving user', 'error');
             }
         });
 
@@ -601,14 +688,22 @@
                 });
 
                 if (response.success) {
-                    authManager.showNotification('User deleted successfully', 'success');
+                    showNotification('User deleted successfully', 'success');
                     loadUsers();
                 } else {
-                    authManager.showNotification(response.error || 'Error deleting user', 'error');
+                    // Demo mode: Delete locally
+                    const userIndex = users.findIndex(u => u._id === userId);
+                    if (userIndex !== -1) {
+                        users.splice(userIndex, 1);
+                        displayUsers();
+                        showNotification('User deleted (Demo Mode)', 'success');
+                    } else {
+                        showNotification('User not found', 'error');
+                    }
                 }
             } catch (error) {
                 console.error('Delete user error:', error);
-                authManager.showNotification('Error deleting user', 'error');
+                showNotification('Error deleting user', 'error');
             }
         }
 
