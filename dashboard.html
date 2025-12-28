@@ -10,6 +10,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     
+    <!-- QR Code Generator Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
     <style>
         :root {
             --bg-gradient-start: #667eea;
@@ -553,16 +556,22 @@
         }
         
         .qr-placeholder {
-            width: 150px;
-            height: 150px;
+            width: 200px;
+            height: 200px;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 4rem;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .qr-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
         
         .qr-btn {
@@ -857,10 +866,26 @@
                 <h2 class="qr-title">📱 Quick Entry QR Code</h2>
                 <p class="qr-subtitle">Scan for Today's Entry • Use your mobile device to quickly enter attendance data</p>
                 <div class="qr-content">
-                    <div class="qr-placeholder">📱</div>
-                    <button class="qr-btn" onclick="generateQR()">
-                        🔄 Generate New QR
-                    </button>
+                    <div id="qrCodeDisplay" class="qr-placeholder">
+                        <div style="text-align: center; color: #94a3b8;">
+                            <div style="font-size: 60px; margin-bottom: 10px;">📱</div>
+                            <p style="font-size: 13px; font-weight: 600; margin: 5px 0;">QR Code</p>
+                            <p style="font-size: 11px; margin: 5px 0 0 0;">Click Generate</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
+                        <button class="qr-btn" onclick="generateQR()">
+                            🔄 Generate New QR
+                        </button>
+                        <div style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); padding: 8px 16px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.3);">
+                            <p style="color: white; font-size: 11px; margin: 0; font-weight: 600;">
+                                📅 Valid for: <span id="qrDate" style="font-weight: 700;">-</span>
+                            </p>
+                        </div>
+                        <button class="qr-btn" onclick="downloadQR()" style="background: rgba(255, 255, 255, 0.2); font-size: 12px; padding: 8px 18px;">
+                            💾 Download QR
+                        </button>
+                    </div>
                 </div>
             </div>
             
@@ -966,9 +991,129 @@
             alert('Notifications:\n\n1. New Form-C entry required\n2. Bank ledger needs update');
         }
         
+        // ========== QR CODE FUNCTIONS ==========
+        let qrCodeInstance = null;
+
         function generateQR() {
-            alert('QR Code will be generated for today entry');
+            const qrDisplay = document.getElementById('qrCodeDisplay');
+            const qrDateElement = document.getElementById('qrDate');
+            
+            if (!qrDisplay) {
+                console.error('QR display element not found');
+                return;
+            }
+
+            // Clear previous QR code
+            qrDisplay.innerHTML = '';
+            if (qrCodeInstance) {
+                qrCodeInstance = null;
+            }
+
+            // Get current date
+            const today = new Date();
+            const dateString = today.toLocaleDateString('en-GB');
+            const timeString = today.toLocaleTimeString('en-GB');
+            
+            // Update date display
+            if (qrDateElement) {
+                qrDateElement.textContent = dateString;
+            }
+
+            // Create simple QR data (shorter for reliability)
+            const qrData = window.location.href + '?date=' + dateString + '&type=quick-entry';
+
+            // Try QRCode.js library first
+            if (typeof QRCode !== 'undefined') {
+                try {
+                    qrCodeInstance = new QRCode(qrDisplay, {
+                        text: qrData,
+                        width: 200,
+                        height: 200,
+                        colorDark: "#1e40af",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+                    console.log('QR Code generated successfully with QRCode.js');
+                    return;
+                } catch (error) {
+                    console.error('QRCode.js error:', error);
+                }
+            }
+
+            // Fallback to Google Charts API (always works)
+            console.log('Using Google Charts API fallback');
+            const googleQRUrl = 'https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=' + encodeURIComponent(qrData);
+            
+            qrDisplay.innerHTML = `
+                <img src="${googleQRUrl}" 
+                     alt="QR Code" 
+                     style="width: 200px; height: 200px; display: block;"
+                     onload="console.log('QR loaded via Google API')"
+                     onerror="this.parentElement.innerHTML='<div style=\\'text-align: center; color: #ef4444; padding: 20px;\\'><div style=\\'font-size: 40px; margin-bottom: 10px;\\'>❌</div><p style=\\'font-size: 12px; margin: 0;\\'>Failed to generate QR</p><p style=\\'font-size: 10px; margin: 5px 0 0 0;\\'>Check internet connection</p></div>'"
+                />
+            `;
         }
+
+        function downloadQR() {
+            const qrDisplay = document.getElementById('qrCodeDisplay');
+            
+            if (!qrDisplay) {
+                alert('QR display not found');
+                return;
+            }
+
+            try {
+                // Try to get canvas first (QRCode.js)
+                const qrCanvas = qrDisplay.querySelector('canvas');
+                
+                if (qrCanvas) {
+                    const url = qrCanvas.toDataURL('image/png');
+                    const link = document.createElement('a');
+                    const today = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+                    link.download = `RHS-MDM-QR-${today}.png`;
+                    link.href = url;
+                    link.click();
+                    console.log('QR downloaded from canvas');
+                    return;
+                }
+
+                // Try to get image (Google Charts API)
+                const qrImg = qrDisplay.querySelector('img');
+                
+                if (qrImg && qrImg.complete) {
+                    // Convert img to canvas for download
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 200;
+                    canvas.height = 200;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(qrImg, 0, 0);
+                    
+                    const url = canvas.toDataURL('image/png');
+                    const link = document.createElement('a');
+                    const today = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+                    link.download = `RHS-MDM-QR-${today}.png`;
+                    link.href = url;
+                    link.click();
+                    console.log('QR downloaded from image');
+                    return;
+                }
+
+                alert('Please generate QR code first');
+                
+            } catch (error) {
+                console.error('Download error:', error);
+                alert('Download failed: ' + error.message);
+            }
+        }
+
+        // Auto-generate QR on page load
+        window.addEventListener('load', function() {
+            console.log('Page loaded, generating QR...');
+            setTimeout(function() {
+                console.log('Checking QRCode library:', typeof QRCode);
+                generateQR();
+            }, 1500);
+        });
         
         function loadStatistics() {
             try {
